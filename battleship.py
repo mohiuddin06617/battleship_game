@@ -70,6 +70,9 @@ class Board:
 
     def place_ship(self, ship, row, column, orientation):
         """Place ship value by orientation"""
+        """ if orientation is vertical then ship_coordinates structure will be [start_row, end_row, column, orientation] 
+        if orientation is horizontal then ship_coordinates structure will be [start_col, end_col, row, orientation]"""
+
         if orientation == "horizontal":
             end_col = 0
             for j in range(column, column + ship.size):
@@ -116,8 +119,8 @@ class Board:
 
     def get_array_values_by_range(self, start_row, start_col, end_row, end_col):
         array_slice = []
-        for row in range(start_row, end_row):
-            for col in range(start_col, end_col):
+        for row in range(start_row, end_row + 1):
+            for col in range(start_col, end_col + 1):
                 array_slice.append(self.guess_board[row][col])
         return array_slice
 
@@ -128,20 +131,19 @@ class Board:
             if orientation == "horizontal":
                 start_column = position[0]
                 end_column = position[1]
-                horizontal_row = position[2]
-                if horizontal_row == row:
-                    hit_ships_list = self.get_array_values_by_range(horizontal_row, start_column, horizontal_row,
-                                                                    end_column)
-                    return hit_ships_list.count("X") == len(hit_ships_list)
-
+                position_row = position[2]
+                if position_row == row:
+                    hit_ships_list = self.get_array_values_by_range(position_row, start_column, position_row,
+                                                                      end_column)
+                    return hit_ships_list.count('X') == len(hit_ships_list)
             elif orientation == "vertical":
                 start_row = position[0]
                 end_row = position[1]
-                vertical_column = position[2]
-                if vertical_column == col:
-                    hit_ships_list = self.get_array_values_by_range(start_row, vertical_column, end_row,
-                                                                    vertical_column)
-                    return hit_ships_list.count("X") == len(hit_ships_list)
+                position_column = position[2]
+                if position_column == col:
+                    hit_ships_list = self.get_array_values_by_range(start_row, position_column, end_row,
+                                                                      position_column)
+                    return hit_ships_list.count('X') == len(hit_ships_list)
         return True
 
     def shot_to_ship(self, row, column):
@@ -156,7 +158,7 @@ class Board:
             self.guess_board[row][column] = "X"
             if self.check_for_ship_sunk(row, column):
                 self.total_ship_sunk += 1
-                print("** A Ship Completely Sunk")
+                print("** A Ship Completely Sunk **")
 
 
 def get_coordinates():
@@ -189,11 +191,13 @@ if __name__ == "__main__":
     while not board.game_over:
         board.show_guess_board()
         coordinates = get_coordinates()
+
         if coordinates == "SHOW":
             board.show_hidden_board()
             continue
 
         row, column = coordinates
+
         board.shot_to_ship(row, column)
         board.shots += 1
         board.check_for_game_over()

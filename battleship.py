@@ -103,6 +103,11 @@ class Board:
         for i, row in enumerate(board):
             print(chr(ord('A') + i) + ' ' + ' '.join(row))
 
+    def check_for_game_over(self):
+        if self.num_of_ships_placed == self.total_ship_sunk:
+            self.game_over = True
+            print(f"Well Done! You completed the game in {self.shots} shots")
+
 
 def get_coordinates():
     while True:
@@ -131,7 +136,11 @@ if __name__ == "__main__":
     board.ship_placement_process(destroyer_one)
     board.ship_placement_process(destroyer_two)
 
-    board.show_guess_board()
-    coordinates = get_coordinates()
-    if coordinates == "SHOW":
-        board.show_hidden_board()
+    while not board.game_over:
+        board.show_guess_board()
+        coordinates = get_coordinates()
+        if coordinates == "SHOW":
+            board.show_hidden_board()
+            continue
+
+        row, column = coordinates

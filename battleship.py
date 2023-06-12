@@ -14,3 +14,21 @@ Step 8 - Update the guess board according to the users inputted value.
 Step 9 - Keep count of number of shots. Increase number of shots after each iteration.
 Step 10 - Check if game is over. When the total number of ships is equal to sunked ships end the game and notify user that he has won after X number of shots.
 """
+
+import random
+import time
+
+"""
+Ensures different sequence of random numbers
+"""
+random.seed(time.time())
+
+
+class Ship:
+    def __init__(self, name, size):
+        self.name = name
+        self.size = size
+        self.hits = 0
+
+    def is_sunk(self):
+        return self.hits == self.size

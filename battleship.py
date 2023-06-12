@@ -71,11 +71,17 @@ class Board:
     def place_ship(self, ship, row, column, orientation):
         """Place ship value by orientation"""
         if orientation == "horizontal":
+            end_col = 0
             for j in range(column, column + ship.size):
                 self.hidden_board[row][j] = "X"
+                end_col = j
+            self.ship_coordinates.append([column, end_col, row, orientation])
         else:
+            end_row = 0
             for i in range(row, row + ship.size):
                 self.hidden_board[i][column] = "X"
+                end_row = i
+            self.ship_coordinates.append([row, end_row, column, orientation])
 
         self.ships.append(ship)
         self.num_of_ships_placed += 1
@@ -108,16 +114,49 @@ class Board:
             self.game_over = True
             print(f"Well Done! You completed the game in {self.shots} shots")
 
+    def get_array_values_by_range(self, start_row, start_col, end_row, end_col):
+        array_slice = []
+        for row in range(start_row, end_row):
+            for col in range(start_col, end_col):
+                array_slice.append(self.guess_board[row][col])
+        return array_slice
+
+    def check_for_ship_sunk(self, row, col):
+        """check all consecutive rows/columns are hit or not. if all are hit then mark the ship as sunk"""
+        for position in self.ship_coordinates:
+            orientation = position[3]
+            if orientation == "horizontal":
+                start_column = position[0]
+                end_column = position[1]
+                horizontal_row = position[2]
+                if horizontal_row == row:
+                    hit_ships_list = self.get_array_values_by_range(horizontal_row, start_column, horizontal_row,
+                                                                    end_column)
+                    return hit_ships_list.count("X") == len(hit_ships_list)
+
+            elif orientation == "vertical":
+                start_row = position[0]
+                end_row = position[1]
+                vertical_column = position[2]
+                if vertical_column == col:
+                    hit_ships_list = self.get_array_values_by_range(start_row, vertical_column, end_row,
+                                                                    vertical_column)
+                    return hit_ships_list.count("X") == len(hit_ships_list)
+        return True
+
     def shot_to_ship(self, row, column):
         """"""
         if self.guess_board[row][column] == "-" or self.guess_board[row][column] == "X":
-            print("You guessed that one already")
+            print("Already Guessed")
         elif self.hidden_board[row][column] == ".":
             print("**Miss**")
             self.guess_board[row][column] = "-"
         elif self.hidden_board[row][column] == "X":
             print("**Hit**")
             self.guess_board[row][column] = "X"
+            if self.check_for_ship_sunk(row, column):
+                self.total_ship_sunk += 1
+                print("** A Ship Completely Sunk")
 
 
 def get_coordinates():
@@ -157,3 +196,6 @@ if __name__ == "__main__":
         row, column = coordinates
         board.shot_to_ship(row, column)
         board.shots += 1
+        board.check_for_game_over()
+
+    board.show_guess_board()

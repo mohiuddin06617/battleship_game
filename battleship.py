@@ -48,23 +48,71 @@ class Board:
         self.game_over = False
         self.shots = 0
 
-    def show_board(self):
-        print("hidden board")
-        print("  1 2 3 4 5 6 7 8 9 10")
-        for i, row in enumerate(self.hidden_board):
-            print(chr(ord('A') + i) + ' ' + ' '.join(row))
+    def validate_ship_placement_grid(self, ship, row, column, orientation):
+        """
+        This method validate that it does not overlap with other ships and its in range
+        """
+        if orientation == 'horizontal':
+            column_size = column + ship.size
+            if column_size > 10:
+                return False
+            for j in range(column, column_size):
+                if self.hidden_board[row][j] != '.':
+                    return False
+        else:
+            row_size = row + ship.size
+            if row_size > 10:
+                return False
+            for i in range(row, row_size):
+                if self.hidden_board[i][column] != '.':
+                    return False
+        return True
 
-        print("Guess board")
+    def place_ship(self, ship, row, column, orientation):
+        """Place ship value by orientation"""
+        if orientation == "horizontal":
+            for j in range(column, column + ship.size):
+                self.hidden_board[row][j] = "X"
+        else:
+            for i in range(row, row + ship.size):
+                self.hidden_board[i][column] = "X"
+
+        self.ships.append(ship)
+        self.num_of_ships_placed += 1
+
+    def ship_placement_process(self, ship):
+        """Place random generated ship value in the hidden board"""
+        while True:
+            row = random.randint(0, (ROW_SIZE-1))
+            column = random.randint(0, (COLUMN_SIZE - 1))
+            orientation = random.choice(["horizontal", "vertical"])
+            if self.validate_ship_placement_grid(ship, row, column, orientation):
+                self.place_ship(ship, row, column, orientation)
+                break
+
+    def show_hidden_board(self):
+        print("Hidden Board : ")
+        self.show_board(board=self.hidden_board)
+
+    def show_guess_board(self):
+        print("Guess Board : ")
+        self.show_board(board=self.guess_board)
+
+    def show_board(self, board):
         print("  1 2 3 4 5 6 7 8 9 10")
-        for i, row in enumerate(self.guess_board):
+        for i, row in enumerate(board):
             print(chr(ord('A') + i) + ' ' + ' '.join(row))
 
 
 if __name__ == "__main__":
     board = Board()
+
     battleship = Ship(name="Battleship", size=5)
     destroyer_one = Ship(name="Destroyers", size=4)
     destroyer_two = Ship(name="Destroyers", size=4)
 
-    board.show_board()
+    board.ship_placement_process(battleship)
+    board.ship_placement_process(destroyer_one)
+    board.ship_placement_process(destroyer_two)
 
+    board.show_guess_board()

@@ -108,6 +108,17 @@ class Board:
             self.game_over = True
             print(f"Well Done! You completed the game in {self.shots} shots")
 
+    def shot_to_ship(self, row, column):
+        """"""
+        if self.guess_board[row][column] == "-" or self.guess_board[row][column] == "X":
+            print("You guessed that one already")
+        elif self.hidden_board[row][column] == ".":
+            print("**Miss**")
+            self.guess_board[row][column] = "-"
+        elif self.hidden_board[row][column] == "X":
+            print("**Hit**")
+            self.guess_board[row][column] = "X"
+
 
 def get_coordinates():
     while True:
@@ -144,3 +155,5 @@ if __name__ == "__main__":
             continue
 
         row, column = coordinates
+        board.shot_to_ship(row, column)
+        board.shots += 1

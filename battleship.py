@@ -83,7 +83,7 @@ class Board:
     def ship_placement_process(self, ship):
         """Place random generated ship value in the hidden board"""
         while True:
-            row = random.randint(0, (ROW_SIZE-1))
+            row = random.randint(0, (ROW_SIZE - 1))
             column = random.randint(0, (COLUMN_SIZE - 1))
             orientation = random.choice(["horizontal", "vertical"])
             if self.validate_ship_placement_grid(ship, row, column, orientation):
@@ -104,6 +104,20 @@ class Board:
             print(chr(ord('A') + i) + ' ' + ' '.join(row))
 
 
+def get_coordinates():
+    while True:
+        input_coordinates = input("Enter coordinates (row, col), e.g. A5 = ").strip().upper()
+        try:
+            row_val = ord(input_coordinates[0]) - ord("A")  # Converting string into ordinal number
+            col_val = int(input_coordinates[1:]) - 1
+
+            if 0 <= row_val <= (ROW_SIZE - 1) and 0 <= col_val <= (COLUMN_SIZE - 1):
+                return row_val, col_val
+            print("Invalid Coordinates. Please provide valid coordinates.")
+        except ValueError:
+            print("Invalid Input. Please recheck and try again")
+
+
 if __name__ == "__main__":
     board = Board()
 
@@ -116,3 +130,4 @@ if __name__ == "__main__":
     board.ship_placement_process(destroyer_two)
 
     board.show_guess_board()
+    get_coordinates()

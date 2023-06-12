@@ -107,6 +107,8 @@ class Board:
 def get_coordinates():
     while True:
         input_coordinates = input("Enter coordinates (row, col), e.g. A5 = ").strip().upper()
+        if input_coordinates == "SHOW":
+            return "SHOW"
         try:
             row_val = ord(input_coordinates[0]) - ord("A")  # Converting string into ordinal number
             col_val = int(input_coordinates[1:]) - 1
@@ -130,4 +132,6 @@ if __name__ == "__main__":
     board.ship_placement_process(destroyer_two)
 
     board.show_guess_board()
-    get_coordinates()
+    coordinates = get_coordinates()
+    if coordinates == "SHOW":
+        board.show_hidden_board()

@@ -11,6 +11,6 @@ Step 8 - Update the guess board according to the users inputted value.
     Step 8.1 -> If the target square is miss (marked as "-") or hit (marked as "X"), then inform the player that it is already guessed.
     Step 8.2 -> If the target square is empty (marked as '.'), update it to a miss marker '-' and inform the player.
     Step 8.3 -> If the target square in hidden board contains a ship, update the guess board marker to 'X'. After each hit, check if all the squares of a ship is hit mark. If it is, then mark it as sunk and inform the player accordingly.
-Step 9 - Keep count of number of shots. Increase number of shots.
+Step 9 - Keep count of number of shots. Increase number of shots after each iteration.
 Step 10 - Check if game is over. When the total number of ships is equal to sunked ships end the game and notify user that he has won after X number of shots.
 """

@@ -18,6 +18,9 @@ Step 10 - Check if game is over. When the total number of ships is equal to sunk
 import random
 import time
 
+ROW_SIZE = 10
+COLUMN_SIZE = 10
+
 """
 Ensures different sequence of random numbers
 """
@@ -32,3 +35,36 @@ class Ship:
 
     def is_sunk(self):
         return self.hits == self.size
+
+
+class Board:
+    def __init__(self):
+        self.ships = []
+        self.hidden_board = [["." for _ in range(ROW_SIZE)] for _ in range(COLUMN_SIZE)]
+        self.guess_board = [["." for _ in range(ROW_SIZE)] for _ in range(COLUMN_SIZE)]
+        self.ship_coordinates = []
+        self.total_ship_sunk = 0
+        self.num_of_ships_placed = 0
+        self.game_over = False
+        self.shots = 0
+
+    def show_board(self):
+        print("hidden board")
+        print("  1 2 3 4 5 6 7 8 9 10")
+        for i, row in enumerate(self.hidden_board):
+            print(chr(ord('A') + i) + ' ' + ' '.join(row))
+
+        print("Guess board")
+        print("  1 2 3 4 5 6 7 8 9 10")
+        for i, row in enumerate(self.guess_board):
+            print(chr(ord('A') + i) + ' ' + ' '.join(row))
+
+
+if __name__ == "__main__":
+    board = Board()
+    battleship = Ship(name="Battleship", size=5)
+    destroyer_one = Ship(name="Destroyers", size=4)
+    destroyer_two = Ship(name="Destroyers", size=4)
+
+    board.show_board()
+
